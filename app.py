@@ -26,7 +26,6 @@ st.markdown("""
         background-color: #357ABD;
     }
     .footer {
-     
         width: 100%;
         color: white;
         text-align: center;
@@ -61,11 +60,19 @@ st.markdown(
 )
 
 # Sidebar for Selecting Unit Type
-unit_type = st.sidebar.radio("Select Conversion Type:", ["Length Converter", "Weight Converter", "Temperature Converter", "Volume Converter", "Time Converter", "Area Converter"])
+unit_type = st.sidebar.selectbox("Select Conversion Type:", ["Length Converter", "Weight Converter", "Temperature Converter", "Volume Converter", "Time Converter", "Area Converter"])
 
-# Initialize session state for history
+# Initialize session state for history and favorites
 if 'history' not in st.session_state:
     st.session_state['history'] = []
+
+if 'favorites' not in st.session_state:
+    st.session_state['favorites'] = []
+
+# Function to swap units
+def swap_units():
+    if 'from_unit' in st.session_state and 'to_unit' in st.session_state:
+        st.session_state['from_unit'], st.session_state['to_unit'] = st.session_state['to_unit'], st.session_state['from_unit']
 
 # Length Converter
 if unit_type == "Length Converter":
@@ -87,13 +94,18 @@ if unit_type == "Length Converter":
     }
 
     amount = st.number_input("Enter length:", min_value=0.0, format="%.2f")
-    from_unit = st.selectbox("From (Length):", list(length_units.keys()))
-    to_unit = st.selectbox("To (Length):", list(length_units.keys()))
+    from_unit = st.selectbox("From (Length):", list(length_units.keys()), key='from_unit')
+    to_unit = st.selectbox("To (Length):", [u for u in length_units.keys() if u != from_unit], key='to_unit')
 
-    if st.button("Convert Length"):
-        result = amount * (length_units[to_unit] / length_units[from_unit])
-        st.success(f"{amount} {from_unit} = {result:.4f} {to_unit}")
-        st.session_state['history'].append(f"{amount} {from_unit} = {result:.4f} {to_unit}")
+    col1, col2 = st.columns(2)
+    with col1:
+        if st.button("Convert Length"):
+            result = amount * (length_units[to_unit] / length_units[from_unit])
+            st.success(f"{amount} {from_unit} = {result:.4f} {to_unit}")
+            st.session_state['history'].append(f"{amount} {from_unit} = {result:.4f} {to_unit}")
+    with col2:
+        if st.button("Swap Units 🔄", on_click=swap_units):
+            pass
 
 # Weight Converter
 elif unit_type == "Weight Converter":
@@ -108,13 +120,18 @@ elif unit_type == "Weight Converter":
     }
 
     amount = st.number_input("Enter weight:", min_value=0.0, format="%.2f")
-    from_unit = st.selectbox("From (Weight):", list(weight_units.keys()))
-    to_unit = st.selectbox("To (Weight):", list(weight_units.keys()))
+    from_unit = st.selectbox("From (Weight):", list(weight_units.keys()), key='from_unit')
+    to_unit = st.selectbox("To (Weight):", [u for u in weight_units.keys() if u != from_unit], key='to_unit')
 
-    if st.button("Convert Weight"):
-        result = amount * (weight_units[to_unit] / weight_units[from_unit])
-        st.success(f"{amount} {from_unit} = {result:.4f} {to_unit}")
-        st.session_state['history'].append(f"{amount} {from_unit} = {result:.4f} {to_unit}")
+    col1, col2 = st.columns(2)
+    with col1:
+        if st.button("Convert Weight"):
+            result = amount * (weight_units[to_unit] / weight_units[from_unit])
+            st.success(f"{amount} {from_unit} = {result:.4f} {to_unit}")
+            st.session_state['history'].append(f"{amount} {from_unit} = {result:.4f} {to_unit}")
+    with col2:
+        if st.button("Swap Units 🔄", on_click=swap_units):
+            pass
 
 # Temperature Converter
 elif unit_type == "Temperature Converter":
@@ -128,33 +145,38 @@ elif unit_type == "Temperature Converter":
     }
 
     amount = st.number_input("Enter temperature:", format="%.2f")
-    from_unit = st.selectbox("From (Temperature):", list(temperature_units.keys()))
-    to_unit = st.selectbox("To (Temperature):", list(temperature_units.keys()))
+    from_unit = st.selectbox("From (Temperature):", list(temperature_units.keys()), key='from_unit')
+    to_unit = st.selectbox("To (Temperature):", [u for u in temperature_units.keys() if u != from_unit], key='to_unit')
 
-    if st.button("Convert Temperature"):
-        if from_unit == "Celsius":
-            if to_unit == "Fahrenheit":
-                result = (amount * 9/5) + 32
-            elif to_unit == "Kelvin":
-                result = amount + 273.15
-            else:
-                result = amount
-        elif from_unit == "Fahrenheit":
-            if to_unit == "Celsius":
-                result = (amount - 32) * 5/9
-            elif to_unit == "Kelvin":
-                result = (amount - 32) * 5/9 + 273.15
-            else:
-                result = amount
-        elif from_unit == "Kelvin":
-            if to_unit == "Celsius":
-                result = amount - 273.15
-            elif to_unit == "Fahrenheit":
-                result = (amount - 273.15) * 9/5 + 32
-            else:
-                result = amount
-        st.success(f"{amount} {from_unit} = {result:.4f} {to_unit}")
-        st.session_state['history'].append(f"{amount} {from_unit} = {result:.4f} {to_unit}")
+    col1, col2 = st.columns(2)
+    with col1:
+        if st.button("Convert Temperature"):
+            if from_unit == "Celsius":
+                if to_unit == "Fahrenheit":
+                    result = (amount * 9/5) + 32
+                elif to_unit == "Kelvin":
+                    result = amount + 273.15
+                else:
+                    result = amount
+            elif from_unit == "Fahrenheit":
+                if to_unit == "Celsius":
+                    result = (amount - 32) * 5/9
+                elif to_unit == "Kelvin":
+                    result = (amount - 32) * 5/9 + 273.15
+                else:
+                    result = amount
+            elif from_unit == "Kelvin":
+                if to_unit == "Celsius":
+                    result = amount - 273.15
+                elif to_unit == "Fahrenheit":
+                    result = (amount - 273.15) * 9/5 + 32
+                else:
+                    result = amount
+            st.success(f"{amount} {from_unit} = {result:.4f} {to_unit}")
+            st.session_state['history'].append(f"{amount} {from_unit} = {result:.4f} {to_unit}")
+    with col2:
+        if st.button("Swap Units 🔄", on_click=swap_units):
+            pass
 
 # Volume Converter
 elif unit_type == "Volume Converter":
@@ -172,13 +194,18 @@ elif unit_type == "Volume Converter":
     }
 
     amount = st.number_input("Enter volume:", min_value=0.0, format="%.2f")
-    from_unit = st.selectbox("From (Volume):", list(volume_units.keys()))
-    to_unit = st.selectbox("To (Volume):", list(volume_units.keys()))
+    from_unit = st.selectbox("From (Volume):", list(volume_units.keys()), key='from_unit')
+    to_unit = st.selectbox("To (Volume):", [u for u in volume_units.keys() if u != from_unit], key='to_unit')
 
-    if st.button("Convert Volume"):
-        result = amount * (volume_units[to_unit] / volume_units[from_unit])
-        st.success(f"{amount} {from_unit} = {result:.4f} {to_unit}")
-        st.session_state['history'].append(f"{amount} {from_unit} = {result:.4f} {to_unit}")
+    col1, col2 = st.columns(2)
+    with col1:
+        if st.button("Convert Volume"):
+            result = amount * (volume_units[to_unit] / volume_units[from_unit])
+            st.success(f"{amount} {from_unit} = {result:.4f} {to_unit}")
+            st.session_state['history'].append(f"{amount} {from_unit} = {result:.4f} {to_unit}")
+    with col2:
+        if st.button("Swap Units 🔄", on_click=swap_units):
+            pass
 
 # Time Converter
 elif unit_type == "Time Converter":
@@ -196,13 +223,18 @@ elif unit_type == "Time Converter":
     }
 
     amount = st.number_input("Enter time:", min_value=0.0, format="%.2f")
-    from_unit = st.selectbox("From (Time):", list(time_units.keys()))
-    to_unit = st.selectbox("To (Time):", list(time_units.keys()))
+    from_unit = st.selectbox("From (Time):", list(time_units.keys()), key='from_unit')
+    to_unit = st.selectbox("To (Time):", [u for u in time_units.keys() if u != from_unit], key='to_unit')
 
-    if st.button("Convert Time"):
-        result = amount * (time_units[to_unit] / time_units[from_unit])
-        st.success(f"{amount} {from_unit} = {result:.4f} {to_unit}")
-        st.session_state['history'].append(f"{amount} {from_unit} = {result:.4f} {to_unit}")
+    col1, col2 = st.columns(2)
+    with col1:
+        if st.button("Convert Time"):
+            result = amount * (time_units[to_unit] / time_units[from_unit])
+            st.success(f"{amount} {from_unit} = {result:.4f} {to_unit}")
+            st.session_state['history'].append(f"{amount} {from_unit} = {result:.4f} {to_unit}")
+    with col2:
+        if st.button("Swap Units 🔄", on_click=swap_units):
+            pass
 
 # Area Converter
 elif unit_type == "Area Converter":
@@ -218,19 +250,39 @@ elif unit_type == "Area Converter":
     }
 
     amount = st.number_input("Enter area:", min_value=0.0, format="%.2f")
-    from_unit = st.selectbox("From (Area):", list(area_units.keys()))
-    to_unit = st.selectbox("To (Area):", list(area_units.keys()))
+    from_unit = st.selectbox("From (Area):", list(area_units.keys()), key='from_unit')
+    to_unit = st.selectbox("To (Area):", [u for u in area_units.keys() if u != from_unit], key='to_unit')
 
-    if st.button("Convert Area"):
-        result = amount * (area_units[to_unit] / area_units[from_unit])
-        st.success(f"{amount} {from_unit} = {result:.4f} {to_unit}")
-        st.session_state['history'].append(f"{amount} {from_unit} = {result:.4f} {to_unit}")
+    col1, col2 = st.columns(2)
+    with col1:
+        if st.button("Convert Area"):
+            result = amount * (area_units[to_unit] / area_units[from_unit])
+            st.success(f"{amount} {from_unit} = {result:.4f} {to_unit}")
+            st.session_state['history'].append(f"{amount} {from_unit} = {result:.4f} {to_unit}")
+    with col2:
+        if st.button("Swap Units 🔄", on_click=swap_units):
+            pass
 
 # Display History
 if st.session_state['history']:
     st.sidebar.markdown("### Conversion History")
     for item in st.session_state['history']:
         st.sidebar.write(item)
+    if st.sidebar.button("Clear History"):
+        st.session_state['history'] = []
+
+# Favorites/Bookmarks
+st.sidebar.markdown("### Favorites")
+favorite_conversion = st.sidebar.text_input("Add a favorite conversion (e.g., 'Meters to Feet'):")
+if st.sidebar.button("Add Favorite"):
+    if favorite_conversion:
+        st.session_state['favorites'].append(favorite_conversion)
+        st.sidebar.success(f"Added '{favorite_conversion}' to favorites!")
+
+if st.session_state['favorites']:
+    st.sidebar.markdown("#### Saved Favorites")
+    for fav in st.session_state['favorites']:
+        st.sidebar.write(fav)
 
 # Footer
 st.markdown("<div class='footer'>Made with ❤️ by Areesha Abdul Sattar</div>", unsafe_allow_html=True)
