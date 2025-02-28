@@ -1,35 +1,51 @@
 import streamlit as st
+import time  # For progress bar simulation
 
 # Custom CSS for Styling
 st.markdown("""
     <style>
+    @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Montserrat:wght@400;700&display=swap');
+
     .main {
-        background-color: #F5F5F5;
+        background: linear-gradient(135deg, #F5F5F5, #E0E0E0);
         padding: 20px;
         border-radius: 10px;
+        font-family: 'Montserrat', sans-serif;
     }
     .sidebar .sidebar-content {
-        background-color: #2E3440;
+        background: linear-gradient(135deg, #2E3440, #4C566A);
         color: #FFFFFF;
+        font-family: 'Roboto', sans-serif;
     }
     h1, h2, h3 {
         color: #4A90E2;
+        font-family: 'Montserrat', sans-serif;
     }
     .stButton>button {
-        background-color: #4A90E2;
+        background: linear-gradient(135deg, #4A90E2, #357ABD);
         color: white;
         border-radius: 5px;
         padding: 10px 20px;
         border: none;
+        font-family: 'Roboto', sans-serif;
     }
     .stButton>button:hover {
-        background-color: #357ABD;
+        background: linear-gradient(135deg, #357ABD, #4A90E2);
     }
     .footer {
         width: 100%;
         color: white;
         text-align: center;
         padding: 10px;
+        background: linear-gradient(135deg, #2E3440, #4C566A);
+        font-family: 'Roboto', sans-serif;
+    }
+    .fade-in {
+        animation: fadeIn 1s ease-in-out;
+    }
+    @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
     }
     </style>
     """, unsafe_allow_html=True)
@@ -40,7 +56,7 @@ if dark_mode:
     st.markdown("""
         <style>
         .main {
-            background-color: #1E1E1E;
+            background: linear-gradient(135deg, #1E1E1E, #2E2E2E);
             color: #FFFFFF;
         }
         h1, h2, h3 {
@@ -100,9 +116,11 @@ if unit_type == "Length Converter":
     col1, col2 = st.columns(2)
     with col1:
         if st.button("Convert Length"):
-            result = amount * (length_units[to_unit] / length_units[from_unit])
-            st.success(f"{amount} {from_unit} = {result:.4f} {to_unit}")
-            st.session_state['history'].append(f"{amount} {from_unit} = {result:.4f} {to_unit}")
+            with st.spinner('Converting...'):
+                time.sleep(1)  # Simulate a delay for the progress bar
+                result = amount * (length_units[to_unit] / length_units[from_unit])
+                st.markdown(f"<div class='fade-in'>{amount} {from_unit} = {result:.4f} {to_unit}</div>", unsafe_allow_html=True)
+                st.session_state['history'].append(f"{amount} {from_unit} = {result:.4f} {to_unit}")
     with col2:
         if st.button("Swap Units 🔄", on_click=swap_units):
             pass
@@ -126,9 +144,11 @@ elif unit_type == "Weight Converter":
     col1, col2 = st.columns(2)
     with col1:
         if st.button("Convert Weight"):
-            result = amount * (weight_units[to_unit] / weight_units[from_unit])
-            st.success(f"{amount} {from_unit} = {result:.4f} {to_unit}")
-            st.session_state['history'].append(f"{amount} {from_unit} = {result:.4f} {to_unit}")
+            with st.spinner('Converting...'):
+                time.sleep(1)  # Simulate a delay for the progress bar
+                result = amount * (weight_units[to_unit] / weight_units[from_unit])
+                st.markdown(f"<div class='fade-in'>{amount} {from_unit} = {result:.4f} {to_unit}</div>", unsafe_allow_html=True)
+                st.session_state['history'].append(f"{amount} {from_unit} = {result:.4f} {to_unit}")
     with col2:
         if st.button("Swap Units 🔄", on_click=swap_units):
             pass
@@ -151,29 +171,31 @@ elif unit_type == "Temperature Converter":
     col1, col2 = st.columns(2)
     with col1:
         if st.button("Convert Temperature"):
-            if from_unit == "Celsius":
-                if to_unit == "Fahrenheit":
-                    result = (amount * 9/5) + 32
-                elif to_unit == "Kelvin":
-                    result = amount + 273.15
-                else:
-                    result = amount
-            elif from_unit == "Fahrenheit":
-                if to_unit == "Celsius":
-                    result = (amount - 32) * 5/9
-                elif to_unit == "Kelvin":
-                    result = (amount - 32) * 5/9 + 273.15
-                else:
-                    result = amount
-            elif from_unit == "Kelvin":
-                if to_unit == "Celsius":
-                    result = amount - 273.15
-                elif to_unit == "Fahrenheit":
-                    result = (amount - 273.15) * 9/5 + 32
-                else:
-                    result = amount
-            st.success(f"{amount} {from_unit} = {result:.4f} {to_unit}")
-            st.session_state['history'].append(f"{amount} {from_unit} = {result:.4f} {to_unit}")
+            with st.spinner('Converting...'):
+                time.sleep(1)  # Simulate a delay for the progress bar
+                if from_unit == "Celsius":
+                    if to_unit == "Fahrenheit":
+                        result = (amount * 9/5) + 32
+                    elif to_unit == "Kelvin":
+                        result = amount + 273.15
+                    else:
+                        result = amount
+                elif from_unit == "Fahrenheit":
+                    if to_unit == "Celsius":
+                        result = (amount - 32) * 5/9
+                    elif to_unit == "Kelvin":
+                        result = (amount - 32) * 5/9 + 273.15
+                    else:
+                        result = amount
+                elif from_unit == "Kelvin":
+                    if to_unit == "Celsius":
+                        result = amount - 273.15
+                    elif to_unit == "Fahrenheit":
+                        result = (amount - 273.15) * 9/5 + 32
+                    else:
+                        result = amount
+                st.markdown(f"<div class='fade-in'>{amount} {from_unit} = {result:.4f} {to_unit}</div>", unsafe_allow_html=True)
+                st.session_state['history'].append(f"{amount} {from_unit} = {result:.4f} {to_unit}")
     with col2:
         if st.button("Swap Units 🔄", on_click=swap_units):
             pass
@@ -200,9 +222,11 @@ elif unit_type == "Volume Converter":
     col1, col2 = st.columns(2)
     with col1:
         if st.button("Convert Volume"):
-            result = amount * (volume_units[to_unit] / volume_units[from_unit])
-            st.success(f"{amount} {from_unit} = {result:.4f} {to_unit}")
-            st.session_state['history'].append(f"{amount} {from_unit} = {result:.4f} {to_unit}")
+            with st.spinner('Converting...'):
+                time.sleep(1)  # Simulate a delay for the progress bar
+                result = amount * (volume_units[to_unit] / volume_units[from_unit])
+                st.markdown(f"<div class='fade-in'>{amount} {from_unit} = {result:.4f} {to_unit}</div>", unsafe_allow_html=True)
+                st.session_state['history'].append(f"{amount} {from_unit} = {result:.4f} {to_unit}")
     with col2:
         if st.button("Swap Units 🔄", on_click=swap_units):
             pass
@@ -229,9 +253,11 @@ elif unit_type == "Time Converter":
     col1, col2 = st.columns(2)
     with col1:
         if st.button("Convert Time"):
-            result = amount * (time_units[to_unit] / time_units[from_unit])
-            st.success(f"{amount} {from_unit} = {result:.4f} {to_unit}")
-            st.session_state['history'].append(f"{amount} {from_unit} = {result:.4f} {to_unit}")
+            with st.spinner('Converting...'):
+                time.sleep(1)  # Simulate a delay for the progress bar
+                result = amount * (time_units[to_unit] / time_units[from_unit])
+                st.markdown(f"<div class='fade-in'>{amount} {from_unit} = {result:.4f} {to_unit}</div>", unsafe_allow_html=True)
+                st.session_state['history'].append(f"{amount} {from_unit} = {result:.4f} {to_unit}")
     with col2:
         if st.button("Swap Units 🔄", on_click=swap_units):
             pass
@@ -256,9 +282,11 @@ elif unit_type == "Area Converter":
     col1, col2 = st.columns(2)
     with col1:
         if st.button("Convert Area"):
-            result = amount * (area_units[to_unit] / area_units[from_unit])
-            st.success(f"{amount} {from_unit} = {result:.4f} {to_unit}")
-            st.session_state['history'].append(f"{amount} {from_unit} = {result:.4f} {to_unit}")
+            with st.spinner('Converting...'):
+                time.sleep(1)  # Simulate a delay for the progress bar
+                result = amount * (area_units[to_unit] / area_units[from_unit])
+                st.markdown(f"<div class='fade-in'>{amount} {from_unit} = {result:.4f} {to_unit}</div>", unsafe_allow_html=True)
+                st.session_state['history'].append(f"{amount} {from_unit} = {result:.4f} {to_unit}")
     with col2:
         if st.button("Swap Units 🔄", on_click=swap_units):
             pass
