@@ -1,1 +1,6 @@
 streamlit
+google-generativeai
+pyperclip
+streamlit-mic-recorder
+matplotlib
+seaborn
