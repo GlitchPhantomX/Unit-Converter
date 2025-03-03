@@ -42,17 +42,19 @@ st.markdown("""
         font-family: 'Montserrat', sans-serif;
     }
     .stButton>button {
-        color: white;
-        border-radius: 5px;
-        padding: 10px 20px;
-        border: #E52020;
-        font-family: 'Roboto', sans-serif;
-        transition: background 0.3s ease;
-    }
-    .stButton>button:hover {
-       border: #E52020
+    color: #000000; /* Set text color to black */
+    background-color: #E52020; /* Add a background color for visibility */
+    border-radius: 5px;
+    padding: 10px 20px;
+    border: none;
+    font-family: 'Roboto', sans-serif;
+    transition: background 0.3s ease, color 0.3s ease;
+}
 
-    }
+  .stButton>button:hover {
+    background-color: #C41C1C; /* Darker shade on hover */
+    color: #FFFFFF; /* Change text color on hover */
+}
     .footer {
         width: 100%;
         color: white;
