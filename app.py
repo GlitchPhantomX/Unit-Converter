@@ -1,33 +1,26 @@
 import streamlit as st
 import google.generativeai as genai
 import time
-import pyperclip  # For clipboard functionality
-import json  # For offline storage
-from streamlit_mic_recorder import mic_recorder  # For voice input
-import matplotlib.pyplot as plt  # For graphical representations
-import seaborn as sns  # For professional graphs
+import pyperclip 
+import json 
+from streamlit_mic_recorder import mic_recorder
+import matplotlib.pyplot as plt
+import seaborn as sns 
 
-# Configure Gemini AI
-# genai.configure(api_key="AIzaSyA2YWlt6M-OWJ7dnkrw3ZncCTPxdY3rZKg")
 genai.configure(api_key="AIzaSyAOmHc2oPhLEe_n2-g3ZU4ZVKhG8c694_Y")
 
-# List available models
 models = genai.list_models()
 for model in models:
     print(model.name)
 
-# Use the correct model
-model = genai.GenerativeModel("gemini-2.0-flash")  # Use the correct model name
+model = genai.GenerativeModel("gemini-2.0-flash") 
 
-# Function to chat with Gemini
 def chat_with_gemini(prompt):
-    response = model.generate_content(prompt)  # Use generate_content instead of generate_text
+    response = model.generate_content(prompt)  
     return response.text
 
-# Streamlit UI
 st.set_page_config(page_title="UnitWizard & AI Chatbot", page_icon="🤖", layout="wide")
 
-# Custom CSS for Styling
 st.markdown("""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Montserrat:wght@400;700&family=Poppins:wght@400;700&display=swap');
@@ -81,7 +74,6 @@ st.markdown("""
     </style>
     """, unsafe_allow_html=True)
 
-# Dark Mode / Light Mode Toggle
 dark_mode = st.sidebar.checkbox("Dark Mode 🌙")
 if dark_mode:
     st.markdown("""
@@ -103,7 +95,6 @@ if dark_mode:
         </style>
         """, unsafe_allow_html=True)
 
-# Main Title
 st.markdown(
     """
     <h1 style='color: #FF6F61; text-align: center; font-family: "Georgia", serif; font-size: 2.5em;'>
@@ -113,31 +104,25 @@ st.markdown(
     unsafe_allow_html=True
 )
 
-# Sidebar for Selecting Unit Type
 unit_type = st.sidebar.selectbox("Select Conversion Type:", [
     "Length Converter", "Weight Converter", "Temperature Converter", 
     "Volume Converter", "Time Converter", "Area Converter", 
     "Pressure Converter", "Speed Converter", "Energy Converter"
 ])
 
-# Initialize session state for history and favorites
 if 'history' not in st.session_state:
     st.session_state['history'] = []
 
 if 'favorites' not in st.session_state:
     st.session_state['favorites'] = []
 
-# Function to swap units
 def swap_units():
     if 'from_unit' in st.session_state and 'to_unit' in st.session_state:
         st.session_state['from_unit'], st.session_state['to_unit'] = st.session_state['to_unit'], st.session_state['from_unit']
 
-# Right Side Content with Tabs
 tab1, tab2, tab3 = st.tabs(["📏 Converter Unit", "🤖 Gemini Chatbot", "🎯 Quiz Mode"])
 
-# Tab 1: Converter Unit
 with tab1:
-    # Length Converter
     if unit_type == "Length Converter":
         st.markdown("<h2 style='color: #FFA500;'><span class='icon'>📏</span>Length Converter</h2>", unsafe_allow_html=True)
         st.write("Convert between different units of length such as kilometers, meters, centimeters, and more.")
@@ -156,7 +141,6 @@ with tab1:
             "Nautical Mile": 1852
         }
 
-        # Bulk Conversion
         st.markdown("### Bulk Conversion")
         bulk_input = st.text_area("Enter multiple values (comma-separated):")
         if bulk_input:
@@ -174,19 +158,17 @@ with tab1:
         with col1:
             if st.button("Convert Length"):
                 with st.spinner('Converting...'):
-                    time.sleep(1)  # Simulate a delay for the progress bar
+                    time.sleep(1)
                     result = amount * (length_units[to_unit] / length_units[from_unit])
                     st.markdown(f"<div class='fade-in'>{amount} {from_unit} = {result:.4f} {to_unit}</div>", unsafe_allow_html=True)
                     st.session_state['history'].append(f"{amount} {from_unit} = {result:.4f} {to_unit}")
-                    # Copy to Clipboard
                     pyperclip.copy(f"{amount} {from_unit} = {result:.4f} {to_unit}")
                     st.success("Result copied to clipboard!")
         with col2:
             if st.button("Swap Units 🔄", on_click=swap_units):
                 pass
 
-        # Graphical Representation
-        if 'result' in locals() or 'result' in globals():  # Check if result is defined
+        if 'result' in locals() or 'result' in globals():
             st.markdown("### Graphical Representation")
             fig, ax = plt.subplots()
             sns.barplot(x=[from_unit, to_unit], y=[amount, result], palette="viridis")
@@ -196,7 +178,6 @@ with tab1:
         else:
             st.warning("Please perform a conversion first to view the graph.")
 
-        # Real-World Example
         st.markdown("### Real-World Example")
         if from_unit == "Kilometre" and to_unit == "Metre":
             st.write("1 kilometer is approximately the length of 10 football fields.")
@@ -205,7 +186,6 @@ with tab1:
         elif from_unit == "Inch" and to_unit == "Centimetre":
             st.write("1 inch is approximately the width of a standard paperclip.")
 
-    # Weight Converter
     elif unit_type == "Weight Converter":
         st.markdown("<h2 style='color: #FF5733;'><span class='icon'>⚖️</span>Weight Converter</h2>", unsafe_allow_html=True)
         st.write("Convert between different units of weight such as kilograms, grams, pounds, and ounces.")
@@ -217,7 +197,6 @@ with tab1:
             "Ounce": 0.0283495
         }
 
-        # Bulk Conversion
         st.markdown("### Bulk Conversion")
         bulk_input = st.text_area("Enter multiple values (comma-separated):")
         if bulk_input:
@@ -235,19 +214,17 @@ with tab1:
         with col1:
             if st.button("Convert Weight"):
                 with st.spinner('Converting...'):
-                    time.sleep(1)  # Simulate a delay for the progress bar
+                    time.sleep(1)  
                     result = amount * (weight_units[to_unit] / weight_units[from_unit])
                     st.markdown(f"<div class='fade-in'>{amount} {from_unit} = {result:.4f} {to_unit}</div>", unsafe_allow_html=True)
                     st.session_state['history'].append(f"{amount} {from_unit} = {result:.4f} {to_unit}")
-                    # Copy to Clipboard
                     pyperclip.copy(f"{amount} {from_unit} = {result:.4f} {to_unit}")
                     st.success("Result copied to clipboard!")
         with col2:
             if st.button("Swap Units 🔄", on_click=swap_units):
                 pass
 
-        # Graphical Representation
-        if 'result' in locals() or 'result' in globals():  # Check if result is defined
+        if 'result' in locals() or 'result' in globals(): 
             st.markdown("### Graphical Representation")
             fig, ax = plt.subplots()
             sns.barplot(x=[from_unit, to_unit], y=[amount, result], palette="viridis")
@@ -257,7 +234,6 @@ with tab1:
         else:
             st.warning("Please perform a conversion first to view the graph.")
 
-        # Real-World Example
         st.markdown("### Real-World Example")
         if from_unit == "Kilogram" and to_unit == "Pound":
             st.write("1 kilogram is approximately the weight of a small pineapple.")
@@ -266,7 +242,6 @@ with tab1:
         elif from_unit == "Gram" and to_unit == "Ounce":
             st.write("1 gram is approximately the weight of a paperclip.")
 
-    # Temperature Converter
     elif unit_type == "Temperature Converter":
         st.markdown("<h2 style='color: #FF1493;'><span class='icon'>🌡️</span>Temperature Converter</h2>", unsafe_allow_html=True)
         st.write("Convert between different units of temperature such as Celsius, Fahrenheit, and Kelvin.")
@@ -277,12 +252,10 @@ with tab1:
             "Kelvin": 1
         }
 
-        # Define from_unit and to_unit before using them in Bulk Conversion
         amount = st.number_input("Enter temperature:", format="%.2f")
         from_unit = st.selectbox("From (Temperature):", list(temperature_units.keys()), key='from_unit')
         to_unit = st.selectbox("To (Temperature):", [u for u in temperature_units.keys() if u != from_unit], key='to_unit')
 
-        # Bulk Conversion
         st.markdown("### Bulk Conversion")
         bulk_input = st.text_area("Enter multiple values (comma-separated):")
         if bulk_input:
@@ -319,7 +292,7 @@ with tab1:
         with col1:
             if st.button("Convert Temperature"):
                 with st.spinner('Converting...'):
-                    time.sleep(1)  # Simulate a delay for the progress bar
+                    time.sleep(1)  
                     if from_unit == "Celsius":
                         if to_unit == "Fahrenheit":
                             result = (amount * 9/5) + 32
@@ -343,15 +316,13 @@ with tab1:
                             result = amount
                     st.markdown(f"<div class='fade-in'>{amount} {from_unit} = {result:.4f} {to_unit}</div>", unsafe_allow_html=True)
                     st.session_state['history'].append(f"{amount} {from_unit} = {result:.4f} {to_unit}")
-                    # Copy to Clipboard
                     pyperclip.copy(f"{amount} {from_unit} = {result:.4f} {to_unit}")
                     st.success("Result copied to clipboard!")
         with col2:
             if st.button("Swap Units 🔄", on_click=swap_units):
                 pass
 
-        # Graphical Representation
-        if 'result' in locals() or 'result' in globals():  # Check if result is defined
+        if 'result' in locals() or 'result' in globals(): 
             st.markdown("### Graphical Representation")
             fig, ax = plt.subplots()
             sns.barplot(x=[from_unit, to_unit], y=[amount, result], palette="viridis")
@@ -361,7 +332,6 @@ with tab1:
         else:
             st.warning("Please perform a conversion first to view the graph.")
 
-        # Real-World Example
         st.markdown("### Real-World Example")
         if from_unit == "Celsius" and to_unit == "Fahrenheit":
             st.write("0°C is the freezing point of water, which is 32°F.")
@@ -370,7 +340,6 @@ with tab1:
         elif from_unit == "Celsius" and to_unit == "Kelvin":
             st.write("0°C is 273.15K, the freezing point of water in Kelvin.")
 
-    # Volume Converter
     elif unit_type == "Volume Converter":
         st.markdown("<h2 style='color: #32CD32;'><span class='icon'>🧴</span>Volume Converter</h2>", unsafe_allow_html=True)
         st.write("Convert between different units of volume such as liters, milliliters, gallons, and more.")
@@ -385,7 +354,6 @@ with tab1:
             "Fluid Ounce": 0.0295735
         }
 
-        # Bulk Conversion
         st.markdown("### Bulk Conversion")
         bulk_input = st.text_area("Enter multiple values (comma-separated):")
         if bulk_input:
@@ -403,19 +371,17 @@ with tab1:
         with col1:
             if st.button("Convert Volume"):
                 with st.spinner('Converting...'):
-                    time.sleep(1)  # Simulate a delay for the progress bar
+                    time.sleep(1)  
                     result = amount * (volume_units[to_unit] / volume_units[from_unit])
                     st.markdown(f"<div class='fade-in'>{amount} {from_unit} = {result:.4f} {to_unit}</div>", unsafe_allow_html=True)
                     st.session_state['history'].append(f"{amount} {from_unit} = {result:.4f} {to_unit}")
-                    # Copy to Clipboard
                     pyperclip.copy(f"{amount} {from_unit} = {result:.4f} {to_unit}")
                     st.success("Result copied to clipboard!")
         with col2:
             if st.button("Swap Units 🔄", on_click=swap_units):
                 pass
 
-        # Graphical Representation
-        if 'result' in locals() or 'result' in globals():  # Check if result is defined
+        if 'result' in locals() or 'result' in globals(): 
             st.markdown("### Graphical Representation")
             fig, ax = plt.subplots()
             sns.barplot(x=[from_unit, to_unit], y=[amount, result], palette="viridis")
@@ -425,7 +391,6 @@ with tab1:
         else:
             st.warning("Please perform a conversion first to view the graph.")
 
-        # Real-World Example
         st.markdown("### Real-World Example")
         if from_unit == "Litre" and to_unit == "Millilitre":
             st.write("1 litre is equivalent to 1000 millilitres, roughly the volume of a standard water bottle.")
@@ -434,7 +399,6 @@ with tab1:
         elif from_unit == "Fluid Ounce" and to_unit == "Millilitre":
             st.write("1 fluid ounce is approximately 29.57 millilitres, the volume of a standard shot glass.")
 
-    # Time Converter
     elif unit_type == "Time Converter":
         st.markdown("<h2 style='color: #FFD700;'><span class='icon'>⏰</span>Time Converter</h2>", unsafe_allow_html=True)
         st.write("Convert between different units of time such as seconds, minutes, hours, days, and more.")
@@ -449,7 +413,6 @@ with tab1:
             "Year": 31536000
         }
 
-        # Bulk Conversion
         st.markdown("### Bulk Conversion")
         bulk_input = st.text_area("Enter multiple values (comma-separated):")
         if bulk_input:
@@ -467,19 +430,17 @@ with tab1:
         with col1:
             if st.button("Convert Time"):
                 with st.spinner('Converting...'):
-                    time.sleep(1)  # Simulate a delay for the progress bar
+                    time.sleep(1)  
                     result = amount * (time_units[to_unit] / time_units[from_unit])
                     st.markdown(f"<div class='fade-in'>{amount} {from_unit} = {result:.4f} {to_unit}</div>", unsafe_allow_html=True)
                     st.session_state['history'].append(f"{amount} {from_unit} = {result:.4f} {to_unit}")
-                    # Copy to Clipboard
                     pyperclip.copy(f"{amount} {from_unit} = {result:.4f} {to_unit}")
                     st.success("Result copied to clipboard!")
         with col2:
             if st.button("Swap Units 🔄", on_click=swap_units):
                 pass
 
-        # Graphical Representation
-        if 'result' in locals() or 'result' in globals():  # Check if result is defined
+        if 'result' in locals() or 'result' in globals():  
             st.markdown("### Graphical Representation")
             fig, ax = plt.subplots()
             sns.barplot(x=[from_unit, to_unit], y=[amount, result], palette="viridis")
@@ -489,7 +450,6 @@ with tab1:
         else:
             st.warning("Please perform a conversion first to view the graph.")
 
-        # Real-World Example
         st.markdown("### Real-World Example")
         if from_unit == "Minute" and to_unit == "Second":
             st.write("1 minute is 60 seconds, the time it takes to boil an egg.")
@@ -498,7 +458,6 @@ with tab1:
         elif from_unit == "Day" and to_unit == "Hour":
             st.write("1 day is 24 hours, the time it takes for the Earth to complete one rotation.")
 
-    # Area Converter
     elif unit_type == "Area Converter":
         st.markdown("<h2 style='color: #8A2BE2;'><span class='icon'>📐</span>Area Converter</h2>", unsafe_allow_html=True)
         st.write("Convert between different units of area such as square meters, square kilometers, square feet, and more.")
@@ -511,7 +470,6 @@ with tab1:
             "Hectare": 10000
         }
 
-        # Bulk Conversion
         st.markdown("### Bulk Conversion")
         bulk_input = st.text_area("Enter multiple values (comma-separated):")
         if bulk_input:
@@ -529,19 +487,17 @@ with tab1:
         with col1:
             if st.button("Convert Area"):
                 with st.spinner('Converting...'):
-                    time.sleep(1)  # Simulate a delay for the progress bar
+                    time.sleep(1) 
                     result = amount * (area_units[to_unit] / area_units[from_unit])
                     st.markdown(f"<div class='fade-in'>{amount} {from_unit} = {result:.4f} {to_unit}</div>", unsafe_allow_html=True)
                     st.session_state['history'].append(f"{amount} {from_unit} = {result:.4f} {to_unit}")
-                    # Copy to Clipboard
                     pyperclip.copy(f"{amount} {from_unit} = {result:.4f} {to_unit}")
                     st.success("Result copied to clipboard!")
         with col2:
             if st.button("Swap Units 🔄", on_click=swap_units):
                 pass
 
-        # Graphical Representation
-        if 'result' in locals() or 'result' in globals():  # Check if result is defined
+        if 'result' in locals() or 'result' in globals():
             st.markdown("### Graphical Representation")
             fig, ax = plt.subplots()
             sns.barplot(x=[from_unit, to_unit], y=[amount, result], palette="viridis")
@@ -551,7 +507,6 @@ with tab1:
         else:
             st.warning("Please perform a conversion first to view the graph.")
 
-        # Real-World Example
         st.markdown("### Real-World Example")
         if from_unit == "Square Metre" and to_unit == "Square Foot":
             st.write("1 square metre is approximately 10.76 square feet, the area of a small room.")
@@ -560,7 +515,6 @@ with tab1:
         elif from_unit == "Hectare" and to_unit == "Acre":
             st.write("1 hectare is approximately 2.47 acres, the area of a large farm field.")
 
-    # Pressure Converter
     elif unit_type == "Pressure Converter":
         st.markdown("<h2 style='color: #FF4500;'><span class='icon'>📉</span>Pressure Converter</h2>", unsafe_allow_html=True)
         st.write("Convert between different units of pressure such as Pascal, Bar, PSI, and more.")
@@ -573,7 +527,6 @@ with tab1:
             "Torr": 133.322
         }
 
-        # Bulk Conversion
         st.markdown("### Bulk Conversion")
         bulk_input = st.text_area("Enter multiple values (comma-separated):")
         if bulk_input:
@@ -591,19 +544,17 @@ with tab1:
         with col1:
             if st.button("Convert Pressure"):
                 with st.spinner('Converting...'):
-                    time.sleep(1)  # Simulate a delay for the progress bar
+                    time.sleep(1) 
                     result = amount * (pressure_units[to_unit] / pressure_units[from_unit])
                     st.markdown(f"<div class='fade-in'>{amount} {from_unit} = {result:.4f} {to_unit}</div>", unsafe_allow_html=True)
                     st.session_state['history'].append(f"{amount} {from_unit} = {result:.4f} {to_unit}")
-                    # Copy to Clipboard
                     pyperclip.copy(f"{amount} {from_unit} = {result:.4f} {to_unit}")
                     st.success("Result copied to clipboard!")
         with col2:
             if st.button("Swap Units 🔄", on_click=swap_units):
                 pass
 
-        # Graphical Representation
-        if 'result' in locals() or 'result' in globals():  # Check if result is defined
+        if 'result' in locals() or 'result' in globals():  
             st.markdown("### Graphical Representation")
             fig, ax = plt.subplots()
             sns.barplot(x=[from_unit, to_unit], y=[amount, result], palette="viridis")
@@ -613,7 +564,6 @@ with tab1:
         else:
             st.warning("Please perform a conversion first to view the graph.")
 
-        # Real-World Example
         st.markdown("### Real-World Example")
         if from_unit == "Pascal" and to_unit == "Bar":
             st.write("1 Pascal is a very small unit of pressure, while 1 Bar is approximately the pressure of the Earth's atmosphere at sea level.")
@@ -622,7 +572,6 @@ with tab1:
         elif from_unit == "Atmosphere" and to_unit == "Torr":
             st.write("1 Atmosphere is approximately 760 Torr, the pressure exerted by a column of mercury 760 mm high.")
 
-    # Speed Converter
     elif unit_type == "Speed Converter":
         st.markdown("<h2 style='color: #00BFFF;'><span class='icon'>🚗</span>Speed Converter</h2>", unsafe_allow_html=True)
         st.write("Convert between different units of speed such as meters per second, kilometers per hour, miles per hour, and more.")
@@ -635,7 +584,6 @@ with tab1:
             "Foot per Second": 0.3048
         }
 
-        # Bulk Conversion
         st.markdown("### Bulk Conversion")
         bulk_input = st.text_area("Enter multiple values (comma-separated):")
         if bulk_input:
@@ -653,19 +601,17 @@ with tab1:
         with col1:
             if st.button("Convert Speed"):
                 with st.spinner('Converting...'):
-                    time.sleep(1)  # Simulate a delay for the progress bar
+                    time.sleep(1) 
                     result = amount * (speed_units[to_unit] / speed_units[from_unit])
                     st.markdown(f"<div class='fade-in'>{amount} {from_unit} = {result:.4f} {to_unit}</div>", unsafe_allow_html=True)
                     st.session_state['history'].append(f"{amount} {from_unit} = {result:.4f} {to_unit}")
-                    # Copy to Clipboard
                     pyperclip.copy(f"{amount} {from_unit} = {result:.4f} {to_unit}")
                     st.success("Result copied to clipboard!")
         with col2:
             if st.button("Swap Units 🔄", on_click=swap_units):
                 pass
 
-        # Graphical Representation
-        if 'result' in locals() or 'result' in globals():  # Check if result is defined
+        if 'result' in locals() or 'result' in globals():  
             st.markdown("### Graphical Representation")
             fig, ax = plt.subplots()
             sns.barplot(x=[from_unit, to_unit], y=[amount, result], palette="viridis")
@@ -675,7 +621,6 @@ with tab1:
         else:
             st.warning("Please perform a conversion first to view the graph.")
 
-        # Real-World Example
         st.markdown("### Real-World Example")
         if from_unit == "Metre per Second" and to_unit == "Kilometre per Hour":
             st.write("1 metre per second is approximately 3.6 kilometres per hour, the speed of a slow walk.")
@@ -684,7 +629,6 @@ with tab1:
         elif from_unit == "Knot" and to_unit == "Metre per Second":
             st.write("1 knot is approximately 0.514 metres per second, the speed of a ship at sea.")
 
-    # Energy Converter
     elif unit_type == "Energy Converter":
         st.markdown("<h2 style='color: #FF69B4;'><span class='icon'>⚡</span>Energy Converter</h2>", unsafe_allow_html=True)
         st.write("Convert between different units of energy such as Joules, Calories, Kilowatt-hours, and more.")
@@ -697,7 +641,6 @@ with tab1:
             "Electronvolt": 1.60218e-19
         }
 
-        # Bulk Conversion
         st.markdown("### Bulk Conversion")
         bulk_input = st.text_area("Enter multiple values (comma-separated):")
         if bulk_input:
@@ -715,19 +658,17 @@ with tab1:
         with col1:
             if st.button("Convert Energy"):
                 with st.spinner('Converting...'):
-                    time.sleep(1)  # Simulate a delay for the progress bar
+                    time.sleep(1)  
                     result = amount * (energy_units[to_unit] / energy_units[from_unit])
                     st.markdown(f"<div class='fade-in'>{amount} {from_unit} = {result:.4f} {to_unit}</div>", unsafe_allow_html=True)
                     st.session_state['history'].append(f"{amount} {from_unit} = {result:.4f} {to_unit}")
-                    # Copy to Clipboard
                     pyperclip.copy(f"{amount} {from_unit} = {result:.4f} {to_unit}")
                     st.success("Result copied to clipboard!")
         with col2:
             if st.button("Swap Units 🔄", on_click=swap_units):
                 pass
 
-        # Graphical Representation
-        if 'result' in locals() or 'result' in globals():  # Check if result is defined
+        if 'result' in locals() or 'result' in globals(): 
             st.markdown("### Graphical Representation")
             fig, ax = plt.subplots()
             sns.barplot(x=[from_unit, to_unit], y=[amount, result], palette="viridis")
@@ -737,7 +678,6 @@ with tab1:
         else:
             st.warning("Please perform a conversion first to view the graph.")
 
-        # Real-World Example
         st.markdown("### Real-World Example")
         if from_unit == "Joule" and to_unit == "Calorie":
             st.write("1 Joule is approximately 0.239 Calories, the energy required to lift a small apple 1 metre.")
@@ -746,11 +686,9 @@ with tab1:
         elif from_unit == "British Thermal Unit (BTU)" and to_unit == "Joule":
             st.write("1 BTU is approximately 1055.06 Joules, the energy required to heat 1 pound of water by 1°F.")
 
-# Tab 2: Gemini Chatbot
 with tab2:
     st.markdown("<h2 style='color: #4CAF50; text-align: center;'>🤖 Gemini Chatbot</h2>", unsafe_allow_html=True)
 
-    # Initialize session state for chat history
     if "chat_sessions" not in st.session_state:
         st.session_state["chat_sessions"] = []
     if "current_chat" not in st.session_state:
@@ -763,20 +701,16 @@ with tab2:
             st.session_state["chat_sessions"].append({"label": first_message, "messages": st.session_state["current_chat"]})
         st.session_state["current_chat"] = []
 
-    # Display chat history
     for message in st.session_state["current_chat"]:
         with st.chat_message(message["role"]):
             st.markdown(f"**{message['role'].capitalize()}:** {message['content']}")
 
-    # User input
     user_input = st.chat_input("Type your message...")
     if user_input:
-        # Display user message
         st.session_state["current_chat"].append({"role": "user", "content": user_input})
         with st.chat_message("user"):
             st.markdown(f"**User:** {user_input}")
 
-        # Generate AI response
         with st.spinner("Thinking..."):
             bot_response = chat_with_gemini(user_input)
         
@@ -784,12 +718,10 @@ with tab2:
         with st.chat_message("assistant"):
             st.markdown(f"**Assistant:** {bot_response}")
 
-# Tab 3: Quiz Mode
 with tab3:
     st.markdown("<h2 style='color: #FF4500; text-align: center;'>🎯 Quiz Mode</h2>", unsafe_allow_html=True)
     st.write("Test your knowledge of unit conversions with this fun quiz!")
 
-    # Quiz Questions
     quiz_questions = [
         {
             "question": "How many meters are in 1 kilometer?",
@@ -818,18 +750,15 @@ with tab3:
         }
     ]
 
-    # Initialize session state for quiz
     if 'quiz_index' not in st.session_state:
         st.session_state['quiz_index'] = 0
     if 'score' not in st.session_state:
         st.session_state['score'] = 0
 
-    # Display current question
     current_question = quiz_questions[st.session_state['quiz_index']]
     st.markdown(f"**Question {st.session_state['quiz_index'] + 1}:** {current_question['question']}")
     user_answer = st.radio("Select your answer:", current_question['options'])
 
-    # Submit answer
     if st.button("Submit Answer"):
         if user_answer == current_question['answer']:
             st.session_state['score'] += 1
@@ -837,7 +766,6 @@ with tab3:
         else:
             st.error(f"Wrong! The correct answer is {current_question['answer']}.")
 
-        # Move to next question
         if st.session_state['quiz_index'] < len(quiz_questions) - 1:
             st.session_state['quiz_index'] += 1
         else:
@@ -847,7 +775,6 @@ with tab3:
                 st.session_state['quiz_index'] = 0
                 st.session_state['score'] = 0
 
-# Display History
 if st.session_state['history']:
     st.sidebar.markdown("### Conversion History")
     for item in st.session_state['history']:
@@ -855,7 +782,6 @@ if st.session_state['history']:
     if st.sidebar.button("Clear History"):
         st.session_state['history'] = []
 
-# Favorites/Bookmarks
 st.sidebar.markdown("### Favorites")
 favorite_conversion = st.sidebar.text_input("Add a favorite conversion (e.g., 'Meters to Feet'):")
 if st.sidebar.button("Add Favorite"):
@@ -868,5 +794,4 @@ if st.session_state['favorites']:
     for fav in st.session_state['favorites']:
         st.sidebar.write(fav)
 
-# Footer
 st.markdown("<div class='footer'>Made with ❤️ by Areesha Abdul Sattar</div>", unsafe_allow_html=True)
