@@ -4,4 +4,3 @@ pyperclip
 streamlit-mic-recorder
 matplotlib
 seaborn
-tkinter
