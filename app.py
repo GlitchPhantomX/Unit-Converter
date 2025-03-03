@@ -8,7 +8,8 @@ import matplotlib.pyplot as plt  # For graphical representations
 import seaborn as sns  # For professional graphs
 
 # Configure Gemini AI
-genai.configure(api_key="AIzaSyCqqPxgZ8vzPNhLcEcCUbkbxswGy6dkLCs")
+# genai.configure(api_key="AIzaSyA2YWlt6M-OWJ7dnkrw3ZncCTPxdY3rZKg")
+genai.configure(api_key="AIzaSyAOmHc2oPhLEe_n2-g3ZU4ZVKhG8c694_Y")
 
 # List available models
 models = genai.list_models()
