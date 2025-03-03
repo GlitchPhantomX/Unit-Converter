@@ -1,22 +1,24 @@
 import streamlit as st
 import google.generativeai as genai
 import time
-import pyperclip 
-import json 
+import json
 from streamlit_mic_recorder import mic_recorder
 import matplotlib.pyplot as plt
-import seaborn as sns 
+import seaborn as sns
+import os
+from dotenv import load_dotenv
 
-genai.configure(api_key="AIzaSyAOmHc2oPhLEe_n2-g3ZU4ZVKhG8c694_Y")
+load_dotenv()
+genai.configure(api_key=os.getenv("GOOGLE_API_KEY"))
 
 models = genai.list_models()
 for model in models:
     print(model.name)
 
-model = genai.GenerativeModel("gemini-2.0-flash") 
+model = genai.GenerativeModel("gemini-2.0-flash")
 
 def chat_with_gemini(prompt):
-    response = model.generate_content(prompt)  
+    response = model.generate_content(prompt)
     return response.text
 
 st.set_page_config(page_title="UnitWizard & AI Chatbot", page_icon="🤖", layout="wide")
@@ -164,8 +166,7 @@ with tab1:
                     result = amount * (length_units[to_unit] / length_units[from_unit])
                     st.markdown(f"<div class='fade-in'>{amount} {from_unit} = {result:.4f} {to_unit}</div>", unsafe_allow_html=True)
                     st.session_state['history'].append(f"{amount} {from_unit} = {result:.4f} {to_unit}")
-                    pyperclip.copy(f"{amount} {from_unit} = {result:.4f} {to_unit}")
-                    st.success("Result copied to clipboard!")
+                    st.success("Conversion successful!")
         with col2:
             if st.button("Swap Units 🔄", on_click=swap_units):
                 pass
@@ -220,8 +221,7 @@ with tab1:
                     result = amount * (weight_units[to_unit] / weight_units[from_unit])
                     st.markdown(f"<div class='fade-in'>{amount} {from_unit} = {result:.4f} {to_unit}</div>", unsafe_allow_html=True)
                     st.session_state['history'].append(f"{amount} {from_unit} = {result:.4f} {to_unit}")
-                    pyperclip.copy(f"{amount} {from_unit} = {result:.4f} {to_unit}")
-                    st.success("Result copied to clipboard!")
+                    st.success("Conversion successful!")
         with col2:
             if st.button("Swap Units 🔄", on_click=swap_units):
                 pass
@@ -318,8 +318,7 @@ with tab1:
                             result = amount
                     st.markdown(f"<div class='fade-in'>{amount} {from_unit} = {result:.4f} {to_unit}</div>", unsafe_allow_html=True)
                     st.session_state['history'].append(f"{amount} {from_unit} = {result:.4f} {to_unit}")
-                    pyperclip.copy(f"{amount} {from_unit} = {result:.4f} {to_unit}")
-                    st.success("Result copied to clipboard!")
+                    st.success("Conversion successful!")
         with col2:
             if st.button("Swap Units 🔄", on_click=swap_units):
                 pass
@@ -377,8 +376,7 @@ with tab1:
                     result = amount * (volume_units[to_unit] / volume_units[from_unit])
                     st.markdown(f"<div class='fade-in'>{amount} {from_unit} = {result:.4f} {to_unit}</div>", unsafe_allow_html=True)
                     st.session_state['history'].append(f"{amount} {from_unit} = {result:.4f} {to_unit}")
-                    pyperclip.copy(f"{amount} {from_unit} = {result:.4f} {to_unit}")
-                    st.success("Result copied to clipboard!")
+                    st.success("Conversion successful!")
         with col2:
             if st.button("Swap Units 🔄", on_click=swap_units):
                 pass
@@ -436,8 +434,7 @@ with tab1:
                     result = amount * (time_units[to_unit] / time_units[from_unit])
                     st.markdown(f"<div class='fade-in'>{amount} {from_unit} = {result:.4f} {to_unit}</div>", unsafe_allow_html=True)
                     st.session_state['history'].append(f"{amount} {from_unit} = {result:.4f} {to_unit}")
-                    pyperclip.copy(f"{amount} {from_unit} = {result:.4f} {to_unit}")
-                    st.success("Result copied to clipboard!")
+                    st.success("Conversion successful!")
         with col2:
             if st.button("Swap Units 🔄", on_click=swap_units):
                 pass
@@ -493,8 +490,7 @@ with tab1:
                     result = amount * (area_units[to_unit] / area_units[from_unit])
                     st.markdown(f"<div class='fade-in'>{amount} {from_unit} = {result:.4f} {to_unit}</div>", unsafe_allow_html=True)
                     st.session_state['history'].append(f"{amount} {from_unit} = {result:.4f} {to_unit}")
-                    pyperclip.copy(f"{amount} {from_unit} = {result:.4f} {to_unit}")
-                    st.success("Result copied to clipboard!")
+                    st.success("Conversion successful!")
         with col2:
             if st.button("Swap Units 🔄", on_click=swap_units):
                 pass
@@ -550,8 +546,7 @@ with tab1:
                     result = amount * (pressure_units[to_unit] / pressure_units[from_unit])
                     st.markdown(f"<div class='fade-in'>{amount} {from_unit} = {result:.4f} {to_unit}</div>", unsafe_allow_html=True)
                     st.session_state['history'].append(f"{amount} {from_unit} = {result:.4f} {to_unit}")
-                    pyperclip.copy(f"{amount} {from_unit} = {result:.4f} {to_unit}")
-                    st.success("Result copied to clipboard!")
+                    st.success("Conversion successful!")
         with col2:
             if st.button("Swap Units 🔄", on_click=swap_units):
                 pass
@@ -607,8 +602,7 @@ with tab1:
                     result = amount * (speed_units[to_unit] / speed_units[from_unit])
                     st.markdown(f"<div class='fade-in'>{amount} {from_unit} = {result:.4f} {to_unit}</div>", unsafe_allow_html=True)
                     st.session_state['history'].append(f"{amount} {from_unit} = {result:.4f} {to_unit}")
-                    pyperclip.copy(f"{amount} {from_unit} = {result:.4f} {to_unit}")
-                    st.success("Result copied to clipboard!")
+                    st.success("Conversion successful!")
         with col2:
             if st.button("Swap Units 🔄", on_click=swap_units):
                 pass
@@ -664,8 +658,7 @@ with tab1:
                     result = amount * (energy_units[to_unit] / energy_units[from_unit])
                     st.markdown(f"<div class='fade-in'>{amount} {from_unit} = {result:.4f} {to_unit}</div>", unsafe_allow_html=True)
                     st.session_state['history'].append(f"{amount} {from_unit} = {result:.4f} {to_unit}")
-                    pyperclip.copy(f"{amount} {from_unit} = {result:.4f} {to_unit}")
-                    st.success("Result copied to clipboard!")
+                    st.success("Conversion successful!")
         with col2:
             if st.button("Swap Units 🔄", on_click=swap_units):
                 pass
