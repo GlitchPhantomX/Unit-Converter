@@ -4,3 +4,4 @@ pyperclip
 streamlit-mic-recorder
 matplotlib
 seaborn
+dotenv
