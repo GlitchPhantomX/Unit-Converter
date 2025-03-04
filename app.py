@@ -44,19 +44,18 @@ st.markdown("""
         font-family: 'Montserrat', sans-serif;
     }
     .stButton>button {
-    color: #000000; /* Set text color to black */
-    background-color: #E52020; /* Add a background color for visibility */
-    border-radius: 5px;
-    padding: 10px 20px;
-    border: none;
-    font-family: 'Roboto', sans-serif;
-    transition: background 0.3s ease, color 0.3s ease;
-}
-
-  .stButton>button:hover {
-    background-color: #C41C1C; /* Darker shade on hover */
-    color: #FFFFFF; /* Change text color on hover */
-}
+        color: #FFFFFF; /* White text color */
+        background-color: #4A90E2; /* Blue background color */
+        border-radius: 5px;
+        padding: 10px 20px;
+        border: none;
+        font-family: 'Roboto', sans-serif;
+        transition: background 0.3s ease, color 0.3s ease;
+    }
+    .stButton>button:hover {
+        background-color: #357ABD; /* Darker blue on hover */
+        color: #FFFFFF; /* White text color on hover */
+    }
     .footer {
         width: 100%;
         color: white;
@@ -95,6 +94,19 @@ if dark_mode:
         }
         .stButton>button:hover {
             background: linear-gradient(135deg, #FF8C00, #FFA500);
+        }
+        </style>
+        """, unsafe_allow_html=True)
+else:
+    st.markdown("""
+        <style>
+        .stButton>button {
+            background-color: #4A90E2; /* Blue background color */
+            color: #FFFFFF; /* White text color */
+        }
+        .stButton>button:hover {
+            background-color: #357ABD; /* Darker blue on hover */
+            color: #FFFFFF; /* White text color on hover */
         }
         </style>
         """, unsafe_allow_html=True)
